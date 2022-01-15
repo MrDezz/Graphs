@@ -1,12 +1,12 @@
-﻿/*
+/*
 
 This is a Graph class implementation.
 
-Version 1.0
+Version 2.0
 
-Date of Last modified: 25/10/2021
+Date of Last modified: 15/01/2022
 
-Last modified by: Kirill Arestov
+Last modified by:
 
 
 */
@@ -55,13 +55,13 @@ private:
 	// General variables
 	const int
 		MIN_NUM_OF_VERTEX = 2,
-		MAX_NUM_OF_VERTEX = 50;
+		MAX_NUM_OF_VERTEX = 410;
 
 	//Graph Gra;
-		
+
 	vector<vector<int>> MainGraph;								// Vector NxN for storing a graph in matrix orientation
-	Vertex* Vertexes = new Vertex[MAX_NUM_OF_VERTEX + 1];		// Dynamic array of Vertex objects. Stres all the vertexes in a graph. Initializing with maximum available size for limiting overheads	
-	int 
+	Vertex* Vertexes = new Vertex[MAX_NUM_OF_VERTEX + 1];		// Dynamic array of Vertex objects. Stores all the vertexes in a graph. Initializing with maximum available size for limiting overheads	
+	int
 		num_of_vertexes = 0,									// Num. of vertexes in a graph
 		num_of_edges = 0;										// Num. of edges in a graph
 
@@ -92,7 +92,7 @@ private:
 		}
 
 		MainGraph[0][num_of_vertexes] = MainGraph[num_of_vertexes][0] = Vertexes[num_of_vertexes].Name = num_of_vertexes;
-				
+
 	}
 
 
@@ -126,7 +126,7 @@ private:
 
 			for (int i = 1; i <= num_of_vertexes; i++) {	// ...need to check all the vertexes in the region
 
-				if ( (MainGraph[source][i] != 0) && check_path(i)) {												// If the particular edge exists AND vertex i isn't in the closed set, than..
+				if ((MainGraph[source][i] != 0) && check_path(i)) {												// If the particular edge exists AND vertex i isn't in the closed set, than..
 
 					if (Vertexes[source].Cost + MainGraph[source][i] < Vertexes[i].Cost) {							// If current cost for path to the checking vertex is greater than checking path than...
 						Vertexes[i].Cost = Vertexes[source].Cost + MainGraph[source][i];							//...re-write a new cost to the checking vertex according to this path
@@ -168,7 +168,7 @@ private:
 	}
 
 	// Function that indicates whether a loop in MST when try to add a new edge. Loop will be if we add X-Y edge to the MST and (1) there is X and Y edges in current tree and (2) there is path between X and Y
-	bool check_for_loops(vector<Graph>& SimpleTrees, const int k, Graph& MST_Graph)							
+	bool check_for_loops(vector<Graph>& SimpleTrees, const int k, Graph& MST_Graph)
 	{
 
 		int is_First_Node = 0, is_Second_Node = 0, j = 0;										// Variables for testing whether X and Y already in a closed set
@@ -190,7 +190,7 @@ private:
 		}
 
 		if (is_First_Node && is_Second_Node) {													// If X and Y are in the closed set - try to find a path between X and Y using Dijkstra's algorithm
-			
+
 			if (MST_Graph.GetMinPathCost(SimpleTrees[k].GetVertexName(1), SimpleTrees[k].GetVertexName(2)))
 				return 1;
 			else
@@ -203,24 +203,23 @@ private:
 	}
 
 	// Analyzing connections in initial graph. If one or more vertexes are disconnected - can't construct MST
-	bool is_graph_disconnected()														
+	bool is_graph_disconnected()
 	{
 
 		for (int i = 2; i <= num_of_vertexes; i++)
 		{
 			if (!this->GetMinPathCost(1, i))
 				return 1;
-
 		}
 
 		return 0;
 
 	}
-		
+
 
 
 public:
-	
+
 	// CONSTRUCTORS OF CLASS GRAPH
 	//
 	// Constructor by default
@@ -258,11 +257,11 @@ public:
 	//Constructor with initial conditions from user: DENSITY - probability [0; 1] that particular vertex will have edges to all other vertexes. MAX_COST - maximum cost for path from one vertex to any other. EXACT_VERTEXES - how many vertexes will be in a graph 
 	Graph(const double Density, const int MAX_COST, const int exact_vertexes)
 	{
-		if ( (exact_vertexes > MAX_NUM_OF_VERTEX) || (exact_vertexes < MIN_NUM_OF_VERTEX)) {
-			cout << "Can't create a graph. Number of vertexes should be within ["<< MIN_NUM_OF_VERTEX << " ; " << MAX_NUM_OF_VERTEX << "]" << endl;
+		if ((exact_vertexes > MAX_NUM_OF_VERTEX) || (exact_vertexes < MIN_NUM_OF_VERTEX)) {
+			cout << "Can't create a graph. Number of vertexes should be within [" << MIN_NUM_OF_VERTEX << " ; " << MAX_NUM_OF_VERTEX << "]" << endl;
 			create_zero_graph();
 			cout << "Zero cost graph with 2 vertexes has been created!" << endl;
-			
+
 		}
 		else {
 
@@ -350,28 +349,28 @@ public:
 		num_of_vertexes = Gr1.GetVertexes();
 		num_of_edges = Gr1.GetEdges();
 		Vertex* Vert_temp = Gr1.GetVertexesContent();
-		
+
 		// Resize initial matrix
 		MainGraph.clear();
 		MainGraph.resize(num_of_vertexes + 1, vector<int>(num_of_vertexes + 1));
-						
+
 		//Copying all edges
 		for (int i = 0; i <= num_of_vertexes; i++)
 			for (int j = 0; j <= num_of_vertexes; j++)
 				MainGraph[i][j] = Gr1.GetEdgeValue(i, j);
-		
+
 		//Copying vertex info
 		for (int i = 0; i <= MAX_NUM_OF_VERTEX; i++) {
 			Vertexes[i].Name = Vert_temp[i].Name;
 			Vertexes[i].Cost = Vert_temp[i].Cost;
 			Vertexes[i].is_destination = Vert_temp[i].is_destination;
 		}
-		
+
 		return *this;
 	}
 
 
-	// PUBLIC GENERAL METHODS
+	// PUBLIC GENERAL METHODS OF CLASS GRAPH
 	//
 	// Copy Graph to a file for analysis and checking results
 	void CopyToFile(string FileName)
@@ -391,7 +390,7 @@ public:
 
 		cout << "Graph has been copied to a file: " << FileName << endl;
 	}
-	
+
 	// Returns a number of edges in a graph
 	int GetEdges() { return num_of_edges; }
 
@@ -436,9 +435,9 @@ public:
 				cout << "Vertex " << i << " , cost: " << MainGraph[x][i] << endl;
 		}
 	}
-	
+
 	// Adds X to Y edge of value COST if this edge doesn't exist
-	void Add(const int x, const int y, const int cost)
+	void AddEdge(const int x, const int y, const int cost)
 	{
 		if (!MainGraph[x][y]) {
 			MainGraph[x][y] = MainGraph[y][x] = cost;
@@ -458,7 +457,18 @@ public:
 		else
 			cout << "The edge between " << x << " and " << y << "doesn't exists. Can't delete the edge." << endl;
 	}
-	
+
+	// Deteles all edges for particular vertex (V) in a graph
+	void DeleteEdges(const int& V)
+	{
+		for ( int i = 1; i <= num_of_vertexes; i++ )
+			if (MainGraph[V][i] != 0) {
+				MainGraph[V][i] = MainGraph[i][V] = 0;
+				num_of_edges--;
+			}
+	}
+
+
 	// Sets X to Y edge value 
 	void SetEdgeValue(const int x, const int y, const int Val)
 	{
@@ -468,7 +478,7 @@ public:
 		}
 		else
 			cout << "Can't set edge between " << x << " and " << y << " because one of the vertexes doesn't exist." << endl;
-	}	
+	}
 
 	// Sets the name (int) for particular node
 	void SetName(int node, int Name)
@@ -514,6 +524,30 @@ public:
 
 	}
 
+	// Adds new vertex into graph to the end 
+	void AddVertex()
+	{
+
+		vector <vector <int>> temp_graph = MainGraph;
+
+		num_of_vertexes++;
+
+		MainGraph.clear();
+		MainGraph.resize(num_of_vertexes + 1, vector<int>(num_of_vertexes + 1));
+
+		for (int i = 1; i < num_of_vertexes; i++) {
+			MainGraph[0][i] = MainGraph[i][0] = Vertexes[i].Name = i;														// Generate the names of each vertex (from 1 to num_of_vertexes)
+
+			for (int j = i + 1; j <= num_of_vertexes; j++) {
+				if ((i != num_of_vertexes) && (j != num_of_vertexes))
+					MainGraph[i][j] = MainGraph[j][i] = temp_graph[i][j];
+			}
+		}
+
+		MainGraph[0][num_of_vertexes] = MainGraph[num_of_vertexes][0] = Vertexes[num_of_vertexes].Name = num_of_vertexes;
+
+	}
+
 	
 	// METHODS FOR DIJKSTRA'S SHOREST PATH ALGORITHM
 	// 
@@ -528,11 +562,11 @@ public:
 		ShortestPath.resize(num_of_vertexes + 1, 0);				// Change vector size for final closed set
 
 		DijkstrasAl(source);										// Function DijkstraAl provides calculations of shortest path and minimum cost using Dijkstra's Algorithm
-		
+
 		if (Vertexes[destination].Cost != Vertexes[destination].GetInitCost()) {
 
 			return_string = to_string(ShortestPath[1]);
-						
+
 			int i = 2;
 			while (ShortestPath[i])
 				return_string = return_string + " - " + to_string(ShortestPath[i++]);
@@ -587,6 +621,55 @@ public:
 
 	}
 
+	// Special Dijkstra's algorithm for HEX game finding a winner
+	int SpecialHexAlgorithm(vector <int> sources, vector <int> destinations)
+	{
+		// Preparations for calcs
+		Path.resize(num_of_vertexes + 1, 0);						// Vector for testing set
+		ShortestPath.resize(num_of_vertexes + 1, 0);				// Vector for final closed set
+
+		// Make all destinations active
+		for (int i = 0; i < destinations.size(); i++) 
+			Vertexes[destinations[i]].is_destination = 1;
+
+		// Start to calculate shortest path 
+		for (int i = 0; i < sources.size(); i++) {
+
+			Vertexes[sources[i]].Cost = 0;
+
+			DijkstrasAl(sources[i]);				// Function DijkstraAl provides calculations of shortest path and minimum cost using Dijkstra's Algorithm
+
+			// Check whether any shortest path from source to any destinations
+			for (int i = 0; i < destinations.size(); i++) {
+				if (Vertexes[destinations[i]].Cost != Vertexes[destinations[i]].GetInitCost()) {
+
+					int Real_cost = Vertexes[destinations[i]].Cost;
+
+					// Clean up before returning
+					for (int i = 1; i <= num_of_vertexes; i++) 
+						Vertexes[i].Cost = Vertexes[i].GetInitCost();
+						
+					for (int i = 0; i < destinations.size(); i++) {
+						Vertexes[destinations[i]].is_destination = 0;
+						
+					}
+
+					return Real_cost;
+				}
+			}
+
+		}
+
+		// If we are here - it means there is no shortest pathes among sources and destsinations. Clean up before returning
+		for (int i = 1; i <= num_of_vertexes; i++) {
+			Vertexes[i].Cost = Vertexes[i].GetInitCost();
+			Vertexes[i].is_destination = 0;
+		}
+
+		return 0;
+			
+	}
+
 
 	// METHODS FOR KRUSKAL'S MST ALGORITHM
 	// 
@@ -598,7 +681,7 @@ public:
 			//return this->ReturnNullGraph();														// Just returns a zero graph with two vertexes
 		}
 		else {
-						
+
 			int count = 0;
 			num_of_simple_trees = num_of_edges;
 			SimpleTrees.resize(num_of_simple_trees);
@@ -608,7 +691,7 @@ public:
 			for (int i = 1; i < num_of_vertexes; i++)											// Creates all possible simple trees from a graph
 				for (int j = i + 1; j <= num_of_vertexes; j++)
 
-					if ( MainGraph[i][j] ) {
+					if (MainGraph[i][j]) {
 
 						Temp_Graph.SetName(1, MainGraph[i][0]);
 						Temp_Graph.SetName(2, MainGraph[j][0]);
@@ -644,9 +727,9 @@ public:
 
 					}
 				}
-						
+
 			return MST;																			// Returns constructing MST graph
-			
+
 		}
 
 	}
